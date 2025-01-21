@@ -62,6 +62,9 @@ func Read(entryType Entry, eventChan chan<- Event, eventWG *sync.WaitGroup) {
 	case *EntryFile:
 		info, err := os.Stat(entry.Name)
 		if err != nil {
+			if errors.Is(err, os.ErrNotExist) {
+				return
+			}
 			eventError := EventError{
 				Err: errors.Join(ErrGetFileInfo, err),
 			}
@@ -79,6 +82,9 @@ func Read(entryType Entry, eventChan chan<- Event, eventWG *sync.WaitGroup) {
 	case *EntryDirectory:
 		dirEntries, err := os.ReadDir(entry.Name)
 		if err != nil {
+			if errors.Is(err, os.ErrNotExist) {
+				return
+			}
 			eventError := EventError{
 				Err: errors.Join(ErrReadDirectory, err),
 			}
