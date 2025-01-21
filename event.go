@@ -18,11 +18,11 @@ type (
 	}
 )
 
-func (e EventError) isEvent() {
+func (e *EventError) isEvent() {
 }
 
-func (e EventUpdateEntryCount) isEvent() {
+func (e *EventUpdateEntryCount) isEvent() {
 }
 
-func (e EventUpdateSize) isEvent() {
+func (e *EventUpdateSize) isEvent() {
 }

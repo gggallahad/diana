@@ -23,7 +23,7 @@ func init() {
 func main() {
 	start := time.Now()
 
-	mainEntry := EntryDirectory{
+	mainEntry := &EntryDirectory{
 		Name: path,
 	}
 
@@ -33,17 +33,17 @@ func main() {
 	eventWG.Add(1)
 	go closeChan(eventChan, &eventWG)
 
-	go Read(&mainEntry, eventChan, &eventWG)
+	go Read(mainEntry, eventChan, &eventWG)
 
 	for eventType := range eventChan {
 		switch event := eventType.(type) {
 
-		case EventError:
+		case *EventError:
 			log.Println(event.Err)
 
-		case EventUpdateEntryCount:
+		case *EventUpdateEntryCount:
 
-		case EventUpdateSize:
+		case *EventUpdateSize:
 
 		}
 	}
@@ -65,7 +65,7 @@ func Read(entryType Entry, eventChan chan<- Event, eventWG *sync.WaitGroup) {
 			if errors.Is(err, os.ErrNotExist) {
 				return
 			}
-			eventError := EventError{
+			eventError := &EventError{
 				Err: errors.Join(ErrGetFileInfo, err),
 			}
 			eventChan <- eventError
@@ -74,7 +74,7 @@ func Read(entryType Entry, eventChan chan<- Event, eventWG *sync.WaitGroup) {
 
 		entry.Size = info.Size()
 
-		eventUpdateSize := EventUpdateSize{
+		eventUpdateSize := &EventUpdateSize{
 			Size: info.Size(),
 		}
 		eventChan <- eventUpdateSize
@@ -85,7 +85,7 @@ func Read(entryType Entry, eventChan chan<- Event, eventWG *sync.WaitGroup) {
 			if errors.Is(err, os.ErrNotExist) {
 				return
 			}
-			eventError := EventError{
+			eventError := &EventError{
 				Err: errors.Join(ErrReadDirectory, err),
 			}
 			eventChan <- eventError
@@ -96,7 +96,7 @@ func Read(entryType Entry, eventChan chan<- Event, eventWG *sync.WaitGroup) {
 		entry.Entries = make([]Entry, lenDirEntries)
 		entry.TotalEntryCount += lenDirEntries
 
-		eventUpdateElementCount := EventUpdateEntryCount{
+		eventUpdateElementCount := &EventUpdateEntryCount{
 			EntryCount: lenDirEntries,
 		}
 		eventChan <- eventUpdateElementCount
@@ -124,10 +124,10 @@ func Read(entryType Entry, eventChan chan<- Event, eventWG *sync.WaitGroup) {
 
 		for localEventType := range localEventChan {
 			switch localEvent := localEventType.(type) {
-			case EventError:
-			case EventUpdateEntryCount:
+			case *EventError:
+			case *EventUpdateEntryCount:
 				entry.TotalEntryCount += localEvent.EntryCount
-			case EventUpdateSize:
+			case *EventUpdateSize:
 				entry.TotalSize += localEvent.Size
 			}
 
