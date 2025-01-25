@@ -1,12 +1,8 @@
-package main
+package model
 
 type (
 	Event interface {
 		isEvent()
-	}
-
-	EventError struct {
-		Err error
 	}
 
 	EventUpdateEntryCount struct {
@@ -17,9 +13,6 @@ type (
 		Size int64
 	}
 )
-
-func (e *EventError) isEvent() {
-}
 
 func (e *EventUpdateEntryCount) isEvent() {
 }

@@ -1,137 +1,166 @@
 package main
 
 import (
-	"errors"
 	"flag"
 	"log"
-	"os"
 	"path/filepath"
-	"sync"
-	"time"
-)
 
-var (
-	path string
+	"github.com/gggallahad/diana/internal/handler"
+	"github.com/gggallahad/diana/internal/service"
+	"github.com/gggallahad/diana/pkg/util"
+	"github.com/gggallahad/gui"
 )
 
 func init() {
-	flag.StringVar(&path, "path", ".", "path to directory")
+	flag.StringVar(&util.Path, util.PathFlagName, util.DefaultPath, util.PathDescription)
+	flag.Int64Var(&util.FPS, util.FPSFlagName, util.DefaultFPS, util.FPSDescription)
 
 	flag.Parse()
 }
 
 func main() {
-	start := time.Now()
+	mainDirectoryName := filepath.Base(util.Path)
 
-	mainEntry := &EntryDirectory{
-		Name: path,
+	newService := service.NewService()
+	newHandler := handler.NewHandler(mainDirectoryName, newService)
+
+	screen, err := gui.NewScreen()
+	if err != nil {
+		log.Println(err)
+		return
 	}
 
-	eventChan := make(chan Event)
-	var eventWG sync.WaitGroup
-
-	eventWG.Add(1)
-	go closeChan(eventChan, &eventWG)
-
-	go Read(mainEntry, eventChan, &eventWG)
-
-	for eventType := range eventChan {
-		switch event := eventType.(type) {
-
-		case *EventError:
-			log.Println(event.Err)
-
-		case *EventUpdateEntryCount:
-
-		case *EventUpdateSize:
-
-		}
+	err = screen.Init()
+	if err != nil {
+		log.Println(err)
+		return
 	}
+	defer screen.Close()
 
-	end := time.Since(start)
+	screen.BindInitHandlers(newHandler.Init)
 
-	log.Printf("Directory name: %s   Total size: %d   Total entry count: %d", mainEntry.Name, mainEntry.TotalSize, mainEntry.TotalEntryCount)
-	log.Printf("Time: %.3f seconds", end.Seconds())
+	screen.BindGlobalMiddlewares(newHandler.Kill, newHandler.Resize)
+
+	screen.BindBackgroundHandlers(newHandler.Read, newHandler.GetEvents, newHandler.Draw)
+
+	screen.Run()
 }
 
-func Read(entryType Entry, eventChan chan<- Event, eventWG *sync.WaitGroup) {
-	defer eventWG.Done()
+// func main() {
+// 	start := time.Now()
 
-	switch entry := entryType.(type) {
+// 	mainEntry := &model.EntryDirectory{
+// 		Name: path,
+// 	}
 
-	case *EntryFile:
-		info, err := os.Stat(entry.Name)
-		if err != nil {
-			if errors.Is(err, os.ErrNotExist) {
-				return
-			}
-			eventError := &EventError{
-				Err: errors.Join(ErrGetFileInfo, err),
-			}
-			eventChan <- eventError
-			return
-		}
+// 	eventChan := make(chan model.Event)
+// 	var eventWG sync.WaitGroup
 
-		entry.Size = info.Size()
+// 	eventWG.Add(1)
+// 	go util.CloseChan(eventChan, &eventWG)
 
-		eventUpdateSize := &EventUpdateSize{
-			Size: info.Size(),
-		}
-		eventChan <- eventUpdateSize
+// 	go Read(mainEntry, eventChan, &eventWG)
 
-	case *EntryDirectory:
-		dirEntries, err := os.ReadDir(entry.Name)
-		if err != nil {
-			if errors.Is(err, os.ErrNotExist) {
-				return
-			}
-			eventError := &EventError{
-				Err: errors.Join(ErrReadDirectory, err),
-			}
-			eventChan <- eventError
-			return
-		}
-		lenDirEntries := len(dirEntries)
+// 	for eventType := range eventChan {
+// 		switch event := eventType.(type) {
 
-		entry.Entries = make([]Entry, lenDirEntries)
-		entry.TotalEntryCount += lenDirEntries
+// 		case *model.EventError:
+// 			log.Println(event.Err)
 
-		eventUpdateElementCount := &EventUpdateEntryCount{
-			EntryCount: lenDirEntries,
-		}
-		eventChan <- eventUpdateElementCount
+// 		case *model.EventUpdateEntryCount:
 
-		localEventChan := make(chan Event)
-		var localEventWG sync.WaitGroup
+// 		case *model.EventUpdateSize:
 
-		localEventWG.Add(lenDirEntries)
-		go closeChan(localEventChan, &localEventWG)
+// 		}
+// 	}
 
-		for i := range lenDirEntries {
-			entryPath := filepath.Join(entry.Name, dirEntries[i].Name())
-			if !dirEntries[i].IsDir() {
-				entry.Entries[i] = &EntryFile{
-					Name: entryPath,
-				}
-			} else {
-				entry.Entries[i] = &EntryDirectory{
-					Name: entryPath,
-				}
-			}
+// 	end := time.Since(start)
 
-			go Read(entry.Entries[i], localEventChan, &localEventWG)
-		}
+// 	log.Printf("Directory name: %s   Total size: %d   Total entry count: %d", mainEntry.Name, mainEntry.TotalSize, mainEntry.TotalEntryCount)
+// 	log.Printf("Time: %.3f seconds", end.Seconds())
+// }
 
-		for localEventType := range localEventChan {
-			switch localEvent := localEventType.(type) {
-			case *EventError:
-			case *EventUpdateEntryCount:
-				entry.TotalEntryCount += localEvent.EntryCount
-			case *EventUpdateSize:
-				entry.TotalSize += localEvent.Size
-			}
+// func Read(entryType model.Entry, eventChan chan<- model.Event, eventWG *sync.WaitGroup) {
+// 	defer eventWG.Done()
 
-			eventChan <- localEventType
-		}
-	}
-}
+// 	switch entry := entryType.(type) {
+
+// 	case *model.EntryFile:
+// 		info, err := os.Stat(entry.Name)
+// 		if err != nil {
+// 			if errors.Is(err, os.ErrNotExist) {
+// 				return
+// 			}
+// 			eventError := &model.EventError{
+// 				Err: errors.Join(util.ErrGetFileInfo, err),
+// 			}
+// 			eventChan <- eventError
+// 			return
+// 		}
+
+// 		entry.Size = info.Size()
+
+// 		eventUpdateSize := &model.EventUpdateSize{
+// 			Size: info.Size(),
+// 		}
+// 		eventChan <- eventUpdateSize
+
+// 	case *model.EntryDirectory:
+// 		dirEntries, err := os.ReadDir(entry.Name)
+// 		if err != nil {
+// 			if errors.Is(err, os.ErrNotExist) {
+// 				return
+// 			}
+// 			eventError := &model.EventError{
+// 				Err: errors.Join(util.ErrReadDirectory, err),
+// 			}
+// 			eventChan <- eventError
+// 			return
+// 		}
+// 		lenDirEntries := len(dirEntries)
+
+// 		entry.Entries = make([]model.Entry, lenDirEntries)
+// 		entry.TotalEntryCount += lenDirEntries
+
+// 		eventUpdateElementCount := &model.EventUpdateEntryCount{
+// 			EntryCount: lenDirEntries,
+// 		}
+// 		eventChan <- eventUpdateElementCount
+
+// 		localEventChan := make(chan model.Event)
+// 		var localEventWG sync.WaitGroup
+
+// 		localEventWG.Add(lenDirEntries)
+// 		go util.CloseChan(localEventChan, &localEventWG)
+
+// 		entries := entry.Entries
+// 		for i := range lenDirEntries {
+// 			_ = entries[i] //bc
+
+// 			entryPath := filepath.Join(entry.Name, dirEntries[i].Name())
+// 			if !dirEntries[i].IsDir() {
+// 				entries[i] = &model.EntryFile{
+// 					Name: entryPath,
+// 				}
+// 			} else {
+// 				entries[i] = &model.EntryDirectory{
+// 					Name: entryPath,
+// 				}
+// 			}
+
+// 			go Read(entries[i], localEventChan, &localEventWG)
+// 		}
+
+// 		for localEventType := range localEventChan {
+// 			switch localEvent := localEventType.(type) {
+// 			case *model.EventError:
+// 			case *model.EventUpdateEntryCount:
+// 				entry.TotalEntryCount += localEvent.EntryCount
+// 			case *model.EventUpdateSize:
+// 				entry.TotalSize += localEvent.Size
+// 			}
+
+// 			eventChan <- localEventType
+// 		}
+// 	}
+// }

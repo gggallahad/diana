@@ -1,0 +1,14 @@
+github.com/gggallahad/gui v0.0.0-20250120093121-724f818f4b90 h1:NwaRYpxw5wwBEJ4Fl013ugXXvsYmgWOCJ3iRBR7TOEk=
+github.com/gggallahad/gui v0.0.0-20250120093121-724f818f4b90/go.mod h1:CBnNchYSRESCmjwawTxCDh0z7ckfwKs//LvgxZr95Gk=
+github.com/gggallahad/gui v0.0.0-20250123090222-20dfb51d2ce9 h1:JzUFivOUdZh3L9qnmjj3BOXoxnZfOX6Ba+F2x84s7yE=
+github.com/gggallahad/gui v0.0.0-20250123090222-20dfb51d2ce9/go.mod h1:CBnNchYSRESCmjwawTxCDh0z7ckfwKs//LvgxZr95Gk=
+github.com/gggallahad/gui v0.0.0-20250123114406-0ce8de211686 h1:4eM4RJQZ7sUCZLxsGR8HGQd/AJOBalttfoQGmRc1uOE=
+github.com/gggallahad/gui v0.0.0-20250123114406-0ce8de211686/go.mod h1:CBnNchYSRESCmjwawTxCDh0z7ckfwKs//LvgxZr95Gk=
+github.com/mattn/go-runewidth v0.0.9/go.mod h1:H031xJmbD/WCDINGzjvQ9THkh0rPKHF+m2gUSrubnMI=
+github.com/mattn/go-runewidth v0.0.16 h1:E5ScNMtiwvlvB5paMFdw9p4kSQzbXFikJ5SQO6TULQc=
+github.com/mattn/go-runewidth v0.0.16/go.mod h1:Jdepj2loyihRzMpdS35Xk/zdY8IAYHsh153qUoGf23w=
+github.com/nsf/termbox-go v1.1.1 h1:nksUPLCb73Q++DwbYUBEglYBRPZyoXJdrj5L+TkjyZY=
+github.com/nsf/termbox-go v1.1.1/go.mod h1:T0cTdVuOwf7pHQNtfhnEbzHbcNyCEcVU4YPpouCbVxo=
+github.com/rivo/uniseg v0.2.0/go.mod h1:J6wj4VEh+S6ZtnVlnTBMWIodfgj8LQOQFoIToxlJtxc=
+github.com/rivo/uniseg v0.4.7 h1:WUdvkW8uEhrYfLC4ZzdpI2ztxP1I582+49Oc5Mq64VQ=
+github.com/rivo/uniseg v0.4.7/go.mod h1:FN3SvrM+Zdj16jyLfmOkMNblXMcoc8DfTHruCPUcx88=
