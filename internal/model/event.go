@@ -5,17 +5,17 @@ type (
 		isEvent()
 	}
 
-	EventUpdateEntryCount struct {
+	EventUpdate struct {
 		EntryCount int
+		Size       int64
 	}
 
-	EventUpdateSize struct {
-		Size int64
-	}
+	// EventUpdateSize struct {
+	// }
 )
 
-func (e *EventUpdateEntryCount) isEvent() {
+func (e *EventUpdate) isEvent() {
 }
 
-func (e *EventUpdateSize) isEvent() {
-}
+// func (e *EventUpdateSize) isEvent() {
+// }

@@ -2,7 +2,6 @@ package handler
 
 import (
 	"fmt"
-	"strings"
 	"time"
 
 	"github.com/gggallahad/diana/pkg/util"
@@ -24,14 +23,13 @@ func (h *handler) drawTimerInfo(ctx *gui.Context) {
 	timerText := fmt.Sprintf(util.TimerString, timer.Seconds())
 
 	viewSizeX, _ := ctx.ViewSize()
-	repeatCount := viewSizeX - 1 - util.TimerPositionX - len(timerText)
-	if repeatCount < 1 {
-		repeatCount = 1
-	}
-	spaces := strings.Repeat(" ", repeatCount)
 
-	timerInfo := fmt.Sprintf("%s%s", spaces, timerText)
-	ctx.SetText(util.TimerPositionX, util.TimerPositionY, timerInfo, gui.DefaultColor, gui.DefaultColor)
+	timerInfoOffset := viewSizeX - 1 - util.TimerPositionX - len(timerText)
+	if timerInfoOffset < 0 {
+		timerInfoOffset = 0
+	}
+
+	ctx.SetText(timerInfoOffset, util.TimerPositionY, timerText, gui.DefaultColor, gui.DefaultColor)
 
 	h.drawMutex.Unlock()
 }

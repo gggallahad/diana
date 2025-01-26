@@ -6,6 +6,7 @@ import (
 
 	"github.com/gggallahad/diana/internal/model"
 	"github.com/gggallahad/diana/internal/project"
+	"github.com/gggallahad/diana/pkg/util"
 )
 
 type (
@@ -27,6 +28,10 @@ type (
 		isCurrentDirectoryUpToDate bool
 
 		sizeFormat model.SizeFormat
+		sortFormat model.SortFormat
+
+		viewPositionX int
+		viewPositionY int
 
 		Service project.Service
 
@@ -44,12 +49,14 @@ func NewHandler(mainDirectoryName string, service project.Service) project.Handl
 	stopDraw := make(chan struct{})
 
 	pastDirectories := make([]int, 0)
-
 	currentDirectory := mainDirectory
-
 	isCurrentDirectoryUpToDate := false
 
-	sizeFormat := model.SizeFormatDynamic
+	sizeFormat := util.SizeFormat
+	sortFormat := util.SortFormat
+
+	viewPositionX := 0
+	viewPositionY := 0
 
 	return &handler{
 		mainDirectory:              mainDirectory,
@@ -59,6 +66,9 @@ func NewHandler(mainDirectoryName string, service project.Service) project.Handl
 		currentDirectory:           currentDirectory,
 		isCurrentDirectoryUpToDate: isCurrentDirectoryUpToDate,
 		sizeFormat:                 sizeFormat,
+		sortFormat:                 sortFormat,
+		viewPositionX:              viewPositionX,
+		viewPositionY:              viewPositionY,
 		Service:                    service,
 	}
 }

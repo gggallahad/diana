@@ -5,11 +5,15 @@ import (
 )
 
 func (h *handler) Init(ctx *gui.Context) {
+	h.drawMutex.Lock()
+
 	err := ctx.Clear()
 	if err != nil {
 		return
 	}
 
+	h.drawMutex.Unlock()
+
 	h.drawCurrentDirectoryInfo(ctx)
-	h.drawInterface(ctx)
+	h.DrawInterface(ctx, nil)
 }

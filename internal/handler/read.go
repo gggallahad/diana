@@ -13,5 +13,6 @@ func (h *handler) Read(ctx *gui.Context) {
 	h.eventWG.Add(1)
 	go util.CloseChan(h.eventChan, &h.eventWG)
 
+	h.Service.GetMainDirectorySize(util.Path, h.mainDirectory)
 	go h.Service.Read(util.Path, h.mainDirectory, h.eventChan, &h.eventWG)
 }

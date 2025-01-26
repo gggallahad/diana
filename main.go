@@ -4,8 +4,10 @@ import (
 	"flag"
 	"log"
 	"path/filepath"
+	"runtime"
 
 	"github.com/gggallahad/diana/internal/handler"
+	"github.com/gggallahad/diana/internal/model"
 	"github.com/gggallahad/diana/internal/service"
 	"github.com/gggallahad/diana/pkg/util"
 	"github.com/gggallahad/gui"
@@ -14,11 +16,55 @@ import (
 func init() {
 	flag.StringVar(&util.Path, util.PathFlagName, util.DefaultPath, util.PathDescription)
 	flag.Int64Var(&util.FPS, util.FPSFlagName, util.DefaultFPS, util.FPSDescription)
+	flag.IntVar(&util.NumCPU, util.NumCPUFlagName, util.DefaultNumCPU, util.NumCPUDescription)
+	flag.StringVar(&util.SortFormatString, util.SortFormatFlagName, util.DefaultSortFormat, util.SortFormatDescription)
+	flag.StringVar(&util.SizeFormatString, util.SizeFormatFlagName, util.DefaultSizeFormat, util.SizeFormatDescription)
 
 	flag.Parse()
+
+	if util.FPS < 0 {
+		util.FPS = 0
+	}
+
+	maxNumCPU := runtime.NumCPU()
+	if util.NumCPU > maxNumCPU {
+		util.NumCPU = maxNumCPU
+	}
+
+	switch util.SortFormatString {
+	case "aname":
+		util.SortFormat = model.SortFormatNameAsc
+	case "dname":
+		util.SortFormat = model.SortFormatNameDesc
+	case "asize":
+		util.SortFormat = model.SortFormatSizeAsc
+	case "dsize":
+		util.SortFormat = model.SortFormatSizeDesc
+	default:
+		util.SortFormat = model.SortFormatSizeDesc
+	}
+
+	switch util.SizeFormatString {
+	case "dynamic":
+		util.SizeFormat = model.SizeFormatDynamic
+	case "b":
+		util.SizeFormat = model.SizeFormatBytes
+	case "kb":
+		util.SizeFormat = model.SizeFormatKilobytes
+	case "mb":
+		util.SizeFormat = model.SizeFormatMegabytes
+	case "gb":
+		util.SizeFormat = model.SizeFormatGigabytes
+	case "tb":
+		util.SizeFormat = model.SizeFormatTerabytes
+	default:
+		util.SizeFormat = model.SizeFormatDynamic
+	}
 }
 
 func main() {
+	runtime.GOMAXPROCS(util.NumCPU)
+
 	mainDirectoryName := filepath.Base(util.Path)
 
 	newService := service.NewService()
@@ -39,7 +85,9 @@ func main() {
 
 	screen.BindInitHandlers(newHandler.Init)
 
-	screen.BindGlobalMiddlewares(newHandler.Kill, newHandler.Resize)
+	screen.BindGlobalMiddlewares(newHandler.Kill, newHandler.Resize, newHandler.MoveCamera)
+
+	screen.BindGlobalPostwares(newHandler.DrawInterface)
 
 	screen.BindBackgroundHandlers(newHandler.Read, newHandler.GetEvents, newHandler.Draw)
 

@@ -17,13 +17,14 @@ DrawLoop:
 		case <-h.stopDraw:
 			if !h.isCurrentDirectoryUpToDate {
 				h.drawCurrentDirectoryInfo(ctx)
+				h.drawCurrentDirectoryEntriesInfo(ctx)
 			}
 
 			h.isCurrentDirectoryUpToDate = true
 
 			h.drawTimerInfo(ctx)
 
-			h.drawInterface(ctx)
+			h.DrawInterface(ctx, nil)
 
 			break DrawLoop
 
@@ -31,11 +32,12 @@ DrawLoop:
 			if !h.isCurrentDirectoryUpToDate {
 				h.checkCurrentDirectoryStatus()
 				h.drawCurrentDirectoryInfo(ctx)
+				h.drawCurrentDirectoryEntriesInfo(ctx)
 			}
 
 			h.drawTimerInfo(ctx)
 
-			h.drawInterface(ctx)
+			h.DrawInterface(ctx, nil)
 		}
 	}
 }
