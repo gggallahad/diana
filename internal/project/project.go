@@ -16,6 +16,9 @@ type (
 		Kill(ctx *gui.Context, eventType gui.Event)
 		Resize(ctx *gui.Context, eventType gui.Event)
 		MoveCamera(ctx *gui.Context, eventType gui.Event)
+		Move(ctx *gui.Context, eventType gui.Event)
+
+		ClearInterface(ctx *gui.Context, eventType gui.Event)
 		DrawInterface(ctx *gui.Context, eventType gui.Event)
 	}
 

@@ -87,6 +87,8 @@ func main() {
 
 	screen.BindGlobalMiddlewares(newHandler.Kill, newHandler.Resize, newHandler.MoveCamera)
 
+	screen.BindHandlers(gui.NoState, newHandler.Move)
+
 	screen.BindGlobalPostwares(newHandler.DrawInterface)
 
 	screen.BindBackgroundHandlers(newHandler.Read, newHandler.GetEvents, newHandler.Draw)

@@ -22,10 +22,9 @@ type (
 		startTime time.Time
 		endTime   time.Time
 
-		// cursorPosition   int
-		pastDirectories            []int
-		currentDirectory           *model.EntryDirectory
-		isCurrentDirectoryUpToDate bool
+		currentCursorPositionY int
+		previousDirectories    []*model.EntryDirectory
+		// isCurrentDirectoryUpToDate bool
 
 		sizeFormat model.SizeFormat
 		sortFormat model.SortFormat
@@ -48,9 +47,9 @@ func NewHandler(mainDirectoryName string, service project.Service) project.Handl
 
 	stopDraw := make(chan struct{})
 
-	pastDirectories := make([]int, 0)
-	currentDirectory := mainDirectory
-	isCurrentDirectoryUpToDate := false
+	currentCursorPositionY := 0
+	previousDirectories := []*model.EntryDirectory{mainDirectory}
+	// isCurrentDirectoryUpToDate := false
 
 	sizeFormat := util.SizeFormat
 	sortFormat := util.SortFormat
@@ -59,16 +58,16 @@ func NewHandler(mainDirectoryName string, service project.Service) project.Handl
 	viewPositionY := 0
 
 	return &handler{
-		mainDirectory:              mainDirectory,
-		eventChan:                  eventChan,
-		stopDraw:                   stopDraw,
-		pastDirectories:            pastDirectories,
-		currentDirectory:           currentDirectory,
-		isCurrentDirectoryUpToDate: isCurrentDirectoryUpToDate,
-		sizeFormat:                 sizeFormat,
-		sortFormat:                 sortFormat,
-		viewPositionX:              viewPositionX,
-		viewPositionY:              viewPositionY,
-		Service:                    service,
+		mainDirectory:          mainDirectory,
+		eventChan:              eventChan,
+		stopDraw:               stopDraw,
+		currentCursorPositionY: currentCursorPositionY,
+		previousDirectories:    previousDirectories,
+		// isCurrentDirectoryUpToDate: isCurrentDirectoryUpToDate,
+		sizeFormat:    sizeFormat,
+		sortFormat:    sortFormat,
+		viewPositionX: viewPositionX,
+		viewPositionY: viewPositionY,
+		Service:       service,
 	}
 }

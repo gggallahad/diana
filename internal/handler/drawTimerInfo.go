@@ -10,8 +10,7 @@ import (
 
 func (h *handler) drawTimerInfo(ctx *gui.Context) {
 	h.drawMutex.Lock()
-
-	ctx.ClearRow(util.TimerPositionY)
+	defer h.drawMutex.Unlock()
 
 	var timer time.Duration
 	if h.mainDirectory.IsDone {
@@ -30,6 +29,4 @@ func (h *handler) drawTimerInfo(ctx *gui.Context) {
 	}
 
 	ctx.SetText(timerInfoOffset, util.TimerPositionY, timerText, gui.DefaultColor, gui.DefaultColor)
-
-	h.drawMutex.Unlock()
 }

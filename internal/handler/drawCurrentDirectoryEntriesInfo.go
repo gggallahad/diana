@@ -10,14 +10,15 @@ import (
 
 func (h *handler) drawCurrentDirectoryEntriesInfo(ctx *gui.Context) {
 	h.drawMutex.Lock()
+	defer h.drawMutex.Unlock()
 
-	entries := h.currentDirectory.Entries
+	currentDirectory := util.GetCurrentDirectory(h.previousDirectories)
+	entries := currentDirectory.Entries
 
 	util.SortEntries(h.sortFormat, entries)
 
 	y := util.CurrentDirectoryEntryNamePositionY
 	for i := range entries {
-		ctx.ClearRow(y)
 
 		switch entry := entries[i].(type) {
 
@@ -66,6 +67,4 @@ func (h *handler) drawCurrentDirectoryEntriesInfo(ctx *gui.Context) {
 
 		y++
 	}
-
-	h.drawMutex.Unlock()
 }

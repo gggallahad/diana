@@ -58,13 +58,12 @@ func (h *handler) updateViewContent(ctx *gui.Context) error {
 	ctx.SetViewPosition(h.viewPositionX, h.viewPositionY)
 
 	h.drawMutex.Lock()
+	defer h.drawMutex.Unlock()
 
 	err := ctx.UpdateViewContent()
 	if err != nil {
 		return err
 	}
-
-	h.drawMutex.Unlock()
 
 	return nil
 }

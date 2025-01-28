@@ -7,16 +7,18 @@ const (
 	TimerPositionY int    = 0
 	TimerString    string = "Time: %.3f seconds"
 
-	CurrentDirectoryNamePositionX int    = 3
+	CurrentDirectoryNamePositionX int    = 7
 	CurrentDirectoryNamePositionY int    = 2
-	CurrentDirectoryStatPositionX int    = 0
+	CurrentDirectoryStatPositionX int    = 7
 	CurrentDirectoryStatPositionY int    = 2
 	CurrentDirectoryNameString    string = "Directory name: %s"
 	CurrentDirectoryStatString    string = "Total size: %s   Total entry count: %d   Done:%t"
 
-	CurrentDirectoryEntryNamePositionX       int    = 10
+	DirectorySeparator string = "-"
+
+	CurrentDirectoryEntryNamePositionX       int    = 7
 	CurrentDirectoryEntryNamePositionY       int    = 4
-	CurrentDirectoryEntryStatPositionX       int    = 0
+	CurrentDirectoryEntryStatPositionX       int    = 7
 	CurrentDirectoryEntryStatPositionY       int    = 4
 	CurrentDirectoryEntryDirectoryNameString string = "%s "
 	CurrentDirectoryEntryFileNameString      string = "%s "
@@ -24,6 +26,15 @@ const (
 	CurrentDirectoryEntryFileStatString      string = "Size: %s"
 
 	SizeString string = "%.1f %s"
+
+	LeftCursorPositionX  int = 2
+	RightCursorPositionX int = 2
+	CursorPositionY      int = 4
+)
+
+const (
+	LeftCursor  string = "-->"
+	RightCursor string = "<--"
 )
 
 const (
@@ -42,6 +53,12 @@ const (
 )
 
 var (
+	CursorColor gui.Color = gui.Color{
+		R: 162,
+		G: 97,
+		B: 208,
+	}
+
 	DirectoryColor gui.Color = gui.Color{
 		R: 20,
 		G: 75,

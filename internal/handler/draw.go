@@ -15,27 +15,35 @@ DrawLoop:
 		select {
 
 		case <-h.stopDraw:
-			if !h.isCurrentDirectoryUpToDate {
-				h.drawCurrentDirectoryInfo(ctx)
-				h.drawCurrentDirectoryEntriesInfo(ctx)
-			}
-
-			h.isCurrentDirectoryUpToDate = true
+			h.ClearInterface(ctx, nil)
 
 			h.drawTimerInfo(ctx)
+
+			// if !h.isCurrentDirectoryUpToDate {
+			h.drawCurrentDirectoryInfo(ctx)
+			h.drawCurrentDirectoryEntriesInfo(ctx)
+			// }
+
+			// h.isCurrentDirectoryUpToDate = true
+
+			h.drawCursor(ctx)
 
 			h.DrawInterface(ctx, nil)
 
 			break DrawLoop
 
 		case <-h.drawTick:
-			if !h.isCurrentDirectoryUpToDate {
-				h.checkCurrentDirectoryStatus()
-				h.drawCurrentDirectoryInfo(ctx)
-				h.drawCurrentDirectoryEntriesInfo(ctx)
-			}
+			h.ClearInterface(ctx, nil)
 
 			h.drawTimerInfo(ctx)
+
+			// if !h.isCurrentDirectoryUpToDate {
+			// h.checkCurrentDirectoryStatus()
+			h.drawCurrentDirectoryInfo(ctx)
+			h.drawCurrentDirectoryEntriesInfo(ctx)
+			// }
+
+			h.drawCursor(ctx)
 
 			h.DrawInterface(ctx, nil)
 		}
