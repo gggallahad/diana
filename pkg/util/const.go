@@ -27,8 +27,8 @@ const (
 
 	SizeString string = "%.1f %s"
 
-	LeftCursorPositionX  int = 2
-	RightCursorPositionX int = 2
+	LeftCursorPositionX  int = 3
+	RightCursorPositionX int = 3
 	CursorPositionY      int = 4
 )
 

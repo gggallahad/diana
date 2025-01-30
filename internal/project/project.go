@@ -9,17 +9,17 @@ import (
 
 type (
 	Handler interface {
-		Draw(ctx *gui.Context)
 		Init(ctx *gui.Context)
+
 		Read(ctx *gui.Context)
 		GetEvents(ctx *gui.Context)
+		Draw(ctx *gui.Context)
+
 		Kill(ctx *gui.Context, eventType gui.Event)
 		Resize(ctx *gui.Context, eventType gui.Event)
 		MoveCamera(ctx *gui.Context, eventType gui.Event)
-		Move(ctx *gui.Context, eventType gui.Event)
 
-		ClearInterface(ctx *gui.Context, eventType gui.Event)
-		DrawInterface(ctx *gui.Context, eventType gui.Event)
+		Move(ctx *gui.Context, eventType gui.Event)
 	}
 
 	Service interface {

@@ -5,10 +5,9 @@ import (
 )
 
 func (h *handler) Init(ctx *gui.Context) {
-	h.ClearInterface(ctx, nil)
+	h.clear(ctx)
 
-	// h.drawTimerInfo(ctx)
 	h.drawCurrentDirectoryInfo(ctx)
 
-	h.DrawInterface(ctx, nil)
+	h.flush(ctx)
 }

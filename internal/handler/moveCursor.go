@@ -18,18 +18,3 @@ func (h *handler) moveCursor(cursorPositionOffsetY int) {
 		h.currentCursorPositionY = 0
 	}
 }
-
-func (h *handler) updateCursorPosition(cursorPositionOffsetY int) {
-	h.currentCursorPositionY += cursorPositionOffsetY
-
-	currentDirectory := util.GetCurrentDirectory(h.previousDirectories)
-	maxCursorY := len(currentDirectory.Entries) - 1
-
-	if h.currentCursorPositionY < 0 {
-		h.currentCursorPositionY = maxCursorY
-	}
-
-	if h.currentCursorPositionY > maxCursorY {
-		h.currentCursorPositionY = 0
-	}
-}

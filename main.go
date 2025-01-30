@@ -89,8 +89,6 @@ func main() {
 
 	screen.BindHandlers(gui.NoState, newHandler.Move)
 
-	screen.BindGlobalPostwares(newHandler.DrawInterface)
-
 	screen.BindBackgroundHandlers(newHandler.Read, newHandler.GetEvents, newHandler.Draw)
 
 	screen.Run()

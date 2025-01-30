@@ -2,7 +2,7 @@ package handler
 
 import "github.com/gggallahad/gui"
 
-func (h *handler) DrawInterface(ctx *gui.Context, eventType gui.Event) {
+func (h *handler) flush(ctx *gui.Context) {
 	h.drawMutex.Lock()
 	defer h.drawMutex.Unlock()
 
